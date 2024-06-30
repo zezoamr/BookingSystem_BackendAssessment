@@ -1,0 +1,75 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: "circleci/python:3.11.3"
+        environment:
+          SECRET_KEY: ${SECRET_KEY}
+          ZOOM_API_KEY: ${ZOOM_API_KEY}
+          ZOOM_API_SECRET: ${ZOOM_API_SECRET}
+          ZOOM_API_ACCOUNT_ID: ${ZOOM_API_ACCOUNT_ID}
+          EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+          EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+          EMAIL_FROM: ${EMAIL_FROM}
+          POSTGRES_DB: ${POSTGRES_DB}
+          POSTGRES_USER: ${POSTGRES_USER}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+          POSTGRES_HOST: ${POSTGRES_HOST}
+          POSTGRES_PORT: ${POSTGRES_PORT}
+          DEBUG: ${DEBUG}
+
+    steps:
+      - checkout  #downloading a copy of the code from the code repository
+      - run:
+          name: install req
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt 
+            python manage.py makemigrations
+            python manage.py migrate
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  run_test:
+    docker:
+      - image: "circleci/python:3.11.3"
+        environment:
+          SECRET_KEY: ${SECRET_KEY}
+          ZOOM_API_KEY: ${ZOOM_API_KEY}
+          ZOOM_API_SECRET: ${ZOOM_API_SECRET}
+          ZOOM_API_ACCOUNT_ID: ${ZOOM_API_ACCOUNT_ID}
+          EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+          EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+          EMAIL_FROM: ${EMAIL_FROM}
+          POSTGRES_DB: ${POSTGRES_DB}
+          POSTGRES_USER: ${POSTGRES_USER}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+          POSTGRES_HOST: ${POSTGRES_HOST}
+          POSTGRES_PORT: ${POSTGRES_PORT}
+          DEBUG: ${DEBUG}
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            python manage.py test
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  
+workflows:
+  build_test_deploy:
+    jobs:
+      - build
+      - run_test:
+          requires:
+            - build
+      
