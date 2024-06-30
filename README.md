@@ -45,18 +45,17 @@ This project is a robust Booking System API built with Django and Django Rest Fr
 ## Setup and Installation
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/booking-system-api.git
-    cd booking-system-api
-    ```
 
+   ```bash
+   git clone https://github.com/zezoamr/BookingSystem_BackendAssessment
+   cd booking-system-api
+   ```
 2. Create a `.env` file in the project root and add the necessary environment variables.
-
 3. Build and run the Docker containers:
-    ```bash
-    docker-compose up --build
-    ```
 
+   ```bash
+   docker-compose up --build
+   ```
 4. The API will be available at `http://localhost:8000`.
 
 ## API Documentation
