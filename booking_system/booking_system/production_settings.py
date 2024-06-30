@@ -34,7 +34,10 @@ DEBUG = True if (os.getenv('DEBUG') == 'True' or os.getenv('DEBUG') == 'true') e
 
 ######added
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.up.railway.app", 
+    # NOTE: Place your custom url here if any
+]
 
 # Application definition
 
